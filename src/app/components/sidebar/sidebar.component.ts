@@ -5,14 +5,10 @@ import { MenuService } from 'src/app/services/menu.service';
 @Component({
   selector: 'sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-
-  constructor(private router: Router, public menuService: MenuService) {
-
-  }
-
+  constructor(private router: Router, public menuService: MenuService) {}
 
   selectMenu(menu: number) {
     switch (menu) {
@@ -21,15 +17,15 @@ export class SidebarComponent {
         break;
 
       case 2:
-        this.router.navigate(['/funcionario']);
+        this.router.navigate(['/funcionario/list']);
         break;
 
       case 3:
-        this.router.navigate(['/departamento']);
+        this.router.navigate(['/departamento/list']);
         break;
 
       case 4:
-        this.router.navigate(['/ferias']);
+        this.router.navigate(['/ferias/list']);
         break;
 
       case 100:
@@ -42,7 +38,5 @@ export class SidebarComponent {
     }
 
     this.menuService.menuSelecionado = menu;
-
   }
-
 }

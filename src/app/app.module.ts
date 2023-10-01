@@ -9,20 +9,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { HTTPStatus, LoaderInterceptor } from './interceptor/loader.interceptor';
+import {
+  HTTPStatus,
+  LoaderInterceptor,
+} from './interceptor/loader.interceptor';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AuthGuard } from './pages/guards/auth-guard.service';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const RxJS = [LoaderInterceptor, HTTPStatus];
 
-
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-  
-  ],
+  declarations: [AppComponent, LoginComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -31,10 +29,10 @@ const RxJS = [LoaderInterceptor, HTTPStatus];
     HttpClientModule,
 
     FormsModule,
-    ReactiveFormsModule,  
+    ReactiveFormsModule,
 
     BrowserAnimationsModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
   ],
   providers: [
     AuthGuard,
@@ -42,10 +40,7 @@ const RxJS = [LoaderInterceptor, HTTPStatus];
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
-  exports:
-  [
-    CommonModule
-  ],
-  schemas:[CUSTOM_ELEMENTS_SCHEMA]
+  exports: [CommonModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule {}

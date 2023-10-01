@@ -7,40 +7,50 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'login'
+    redirectTo: 'login',
   },
   {
-    path: 'login', component: LoginComponent
+    path: 'login',
+    component: LoginComponent,
   },
   {
-    path: '', component: LoginComponent
+    path: '',
+    component: LoginComponent,
   },
   {
     path: 'dashboard',
-    loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule),
-    canActivate: [AuthGuard]
+    loadChildren: () =>
+      import('./pages/dashboard/dashboard.module').then(
+        (m) => m.DashboardModule
+      ),
+    canActivate: [AuthGuard],
   },
   {
     path: 'funcionario',
-    loadChildren: () => import('./pages/funcionario/funcionario.module').then(m => m.FuncionarioModule),
-    canActivate: [AuthGuard]
-  }
-  ,
+    loadChildren: () =>
+      import('./pages/funcionarios/funcionario.module').then(
+        (m) => m.FuncionarioModule
+      ),
+    canActivate: [AuthGuard],
+  },
   {
     path: 'departamento',
-    loadChildren: () => import('./pages/departamento/departamento.module').then(m => m.DepartamentoModule),
-    canActivate: [AuthGuard]
-  }
-  ,
+    loadChildren: () =>
+      import('./pages/departamento/departamento.module').then(
+        (m) => m.DepartamentoModule
+      ),
+    canActivate: [AuthGuard],
+  },
   {
     path: 'ferias',
-    loadChildren: () => import('./pages/ferias/ferias.module').then(m => m.FeriasModule),
-    canActivate: [AuthGuard]
-  }
+    loadChildren: () =>
+      import('./pages/ferias/ferias.module').then((m) => m.FeriasModule),
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

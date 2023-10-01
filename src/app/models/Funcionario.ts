@@ -1,7 +1,8 @@
-export class FuncionarioFinanceiro {
+export class Funcionario {
   Id: number;
   Nome: string;
   Matricula: string;
+  Departamento: string;
   Mes: number;
   Ano: number;
   DiaFechamento: number;
@@ -9,7 +10,7 @@ export class FuncionarioFinanceiro {
   MesCopia: number;
   AnoCopia: number;
 
-  NomePropriedade: string = "";
-  mensagem: string = "";
+  NomePropriedade: string = '';
+  mensagem: string = '';
   notificacoes: [];
 }
