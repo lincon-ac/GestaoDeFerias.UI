@@ -1,97 +1,43 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Departamento } from 'src/app/models/Departamento';
 import { Ferias } from 'src/app/models/Ferias';
 import { SelectModel } from 'src/app/models/SelectModel';
-import { FuncionarioFinanceiro } from 'src/app/models/FuncionarioFinanceiro';
+import { Funcionario } from 'src/app/models/Funcionario';
 import { AuthService } from 'src/app/services/auth.service';
-import { DepartamentoService } from 'src/app/services/departamento.service';
 import { FeriasService } from 'src/app/services/ferias.service';
 import { MenuService } from 'src/app/services/menu.service';
-import { Funcionarioservice } from 'src/app/services/funcionario.service';
+import { FuncionarioService } from 'src/app/services/funcionario.service';
+import { dateRangeValidator } from 'src/app/validators/dateRangeValidator';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-ferias',
   templateUrl: './ferias.component.html',
-  styleUrls: ['./ferias.component.scss']
+  styleUrls: ['./ferias.component.scss'],
 })
 export class FeriasComponent {
+  tipoTela: number = 1; // 1 cadastro, 2 edição
+  idFerias: number | null = null;
+  ferias: Ferias | null = null;
 
-
-  tipoTela: number = 1;// 1 listagem, 2 cadastro, 3 edição
-  tableListFerias: Array<Ferias>;
-  id: string;
-
-  page: number = 1;
-  config: any;
-  paginacao: boolean = true;
-  itemsPorPagina: number = 10
-
-  configpag() {
-    this.id = this.gerarIdParaConfigDePaginacao();
-
-    this.config = {
-      id: this.id,
-      currentPage: this.page,
-      itemsPerPage: this.itemsPorPagina
-
-    };
-  }
-
-  gerarIdParaConfigDePaginacao() {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < 10; i++) {
-      result += characters.charAt(Math.floor(Math.random() *
-        charactersLength));
-    }
-    return result;
-  }
-
-  cadastro() {
-    this.tipoTela = 2;
-    this.feriasForm.reset();
-  }
-
-  mudarItemsPorPage() {
-    this.page = 1
-    this.config.currentPage = this.page;
-    this.config.itemsPerPage = this.itemsPorPagina;
-  }
-
-  mudarPage(event: any) {
-    this.page = event;
-    this.config.currentPage = this.page;
-  }
-
-
-  ListarFeriasUsuario() {
-    this.tipoTela = 1;
-
-    this.feriasService.ListarFeriasUsuario(this.authService.getEmailUser())
-      .subscribe((response: Array<Ferias>) => {
-
-        this.tableListFerias = response;
-
-      }, (error) => console.error(error),
-        () => { })
-
-  }
-
-
-  constructor(public menuService: MenuService, public formBuilder: FormBuilder,
-    public funcionarioservice: Funcionarioservice, public authService: AuthService,
-    public departamentoService: DepartamentoService,
-    public feriasService: FeriasService) {
+  constructor(
+    private router: Router,
+    public menuService: MenuService,
+    public formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute,
+    public funcionarioService: FuncionarioService,
+    public authService: AuthService,
+    public feriasService: FeriasService
+  ) {
+    this.feriasForm = this.formBuilder.group({
+      funcionarioselect: ['', Validators.required],
+      dataInicio: ['', [Validators.required, dateRangeValidator()]],
+      dataEncerramento: ['', [Validators.required, dateRangeValidator()]],
+    });
   }
 
   listFuncionarios = new Array<SelectModel>();
   funcionarioselect = new SelectModel();
-
-
-  listDepartamentos = new Array<SelectModel>();
-  departamentoSelect = new SelectModel();
 
   color = 'accent';
   checked = false;
@@ -99,80 +45,116 @@ export class FeriasComponent {
 
   feriasForm: FormGroup;
 
-  ngOnInit() {
+  async ngOnInit() {
     this.menuService.menuSelecionado = 4;
 
-    this.configpag();
-    this.ListarFeriasUsuario();
+    await this.ListaFuncionariosUsuario();
 
-    this.feriasForm = this.formBuilder.group
-      (
-        {
-          name: ['', [Validators.required]],
-          valor: ['', [Validators.required]],
-          data: ['', [Validators.required]],
-          funcionarioselect: ['', [Validators.required]],
-          departamentoSelect: ['', [Validators.required]],
-        }
-      )
-
-
-    this.ListarDepartamentosUsuario();
+    const feriasIdParam = this.activatedRoute.snapshot.paramMap.get(
+      'id'
+    ) as string;
+    const idFerias = feriasIdParam ? parseInt(feriasIdParam) : null;
+    if (idFerias) {
+      this.tipoTela = 2;
+      this.idFerias = idFerias;
+      await this.getFerias();
+    } else {
+      this.tipoTela = 1;
+    }
   }
 
+  async getFerias(): Promise<void> {
+    if (this.idFerias) {
+      this.ObterFerias(this.idFerias);
+    }
+  }
 
-  dadorForm() {
+  ObterFerias(idFerias: number) {
+    this.feriasService.ObterFerias(idFerias).subscribe(
+      (response: Ferias) => {
+        this.ferias = response;
+        console.log(response);
+        this.fillForm(response);
+      },
+      (error) => console.error(error),
+      () => {}
+    );
+  }
+
+  fillForm({ FuncionarioId, DataInicio, DataEncerramento }: Ferias): void {
+    this.feriasForm.get('funcionarioselect')?.setValue(FuncionarioId);
+    const funcionarioModel = new SelectModel();
+    funcionarioModel.id = FuncionarioId.toString();
+    funcionarioModel.name = this.listFuncionarios.find(
+      (funcionario) => funcionario.id == FuncionarioId.toString()
+    ).name;
+    this.funcionarioselect = funcionarioModel;
+    this.feriasForm
+      .get('dataInicio')
+      ?.setValue(DataInicio.toString().split('T')[0]);
+    this.feriasForm
+      .get('dataEncerramento')
+      ?.setValue(DataEncerramento.toString().split('T')[0]);
+  }
+
+  dadosForm() {
     return this.feriasForm.controls;
   }
 
   enviar() {
-    debugger
-    var dados = this.dadorForm();
+    var dados = this.dadosForm();
 
     let item = new Ferias();
-    item.Nome = dados["name"].value;
-    item.Valor = dados["valor"].value;
+    item.Id = this.idFerias ?? 0;
+    item.FuncionarioId = parseInt(this.funcionarioselect.id);
     item.Pago = this.checked;
-    item.DataVencimento = dados["data"].value;
-    item.IdDepartamento = parseInt(this.departamentoSelect.id);
+    item.DataInicio = dados['dataInicio'].value;
+    item.DataEncerramento = dados['dataEncerramento'].value;
 
-    this.feriasService.AdicionarFerias(item)
-      .subscribe((response: Ferias) => {
-
-        this.feriasForm.reset();
-        this.ListarFeriasUsuario();
-
-      }, (error) => console.error(error),
-        () => { })
+    if (this.idFerias) {
+      this.feriasService.AtualizarFerias(item).subscribe(
+        (response: Ferias) => {
+          this.feriasForm.reset();
+          this.goToListFerias();
+        },
+        (error) => console.error(error),
+        () => {}
+      );
+    } else {
+      this.feriasService.AdicionarFerias(item).subscribe(
+        (response: Ferias) => {
+          this.feriasForm.reset();
+          this.goToListFerias();
+        },
+        (error) => console.error(error),
+        () => {}
+      );
+    }
   }
-
 
   handleChangePago(item: any) {
     this.checked = item.checked as boolean;
   }
 
+  async ListaFuncionariosUsuario() {
+    await this.funcionarioService
+      .ListaFuncionariosUsuario(this.authService.getEmailUser())
+      .subscribe((reponse: Array<Funcionario>) => {
+        var listFuncionario = [];
 
-
-  ListarDepartamentosUsuario() {
-    this.departamentoService.ListarDepartamentosUsuario(this.authService.getEmailUser())
-      .subscribe((reponse: Array<Departamento>) => {
-
-        var listaCatagorias = [];
-
-        reponse.forEach(x => {
+        reponse.forEach((x) => {
           var item = new SelectModel();
           item.id = x.Id.toString();
           item.name = x.Nome;
-          listaCatagorias.push(item);
 
+          listFuncionario.push(item);
         });
 
-        this.listDepartamentos = listaCatagorias;
-
-      }
-
-      )
+        this.listFuncionarios = listFuncionario;
+      });
   }
 
-
+  goToListFerias() {
+    this.router.navigate(['/ferias/list']);
+  }
 }

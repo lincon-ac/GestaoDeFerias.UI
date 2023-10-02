@@ -1,0 +1,50 @@
+<navbar></navbar>
+<sidebar></sidebar>
+
+<div class="container-base">
+  <div class="content-page">
+    <div class="card-header">
+      <div class="header-info-2">
+        <div class="card-header">
+          <div class="card-title">{{ tipoTela === 1 ? 'Cadastro de Funcionarios' : 'Edição de Funcionários' }}</div>
+          <div (click)="goToListFuncionarios()" class="card-menu"> Listagem de Funcionarios </div>
+        </div>
+      </div>
+    </div>
+
+    <form class="form-page" [formGroup]="funcionarioForm" (submit)="enviar()">
+      <div class="row">
+        <div class="group-row">
+          <label>Nome do Funcionário</label>
+          <input type="text" name="name" id="name" placeholder="Nome" formControlName="name" required />
+          <label class="error-input" *ngIf="funcionarioForm.get('name')?.errors?.['required'] &&
+                              funcionarioForm.get('name')?.touched">
+            Campo Obrigatório!
+          </label>
+
+          <label>Matrícula do Funcionário</label>
+          <input type="text" name="matricula" id="matricula" placeholder="Matrícula" formControlName="matricula"
+            required />
+          <label class="error-input" *ngIf="funcionarioForm.get('matricula')?.errors?.['required'] &&
+                                                  funcionarioForm.get('matricula')?.touched">
+            Campo Obrigatório!
+          </label>
+
+          <label>Departamento do Funcionário</label>
+          <input type="text" name="departamento" id="departamento" placeholder="Departamento"
+            formControlName="departamento" required />
+          <label class="error-input" *ngIf="funcionarioForm.get('departamento')?.errors?.['required'] &&
+                                                  funcionarioForm.get('departamento')?.touched">
+            Campo Obrigatório!
+          </label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="group-row">
+          <input type="submit" value="Salvar" class="btn-primary" />
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

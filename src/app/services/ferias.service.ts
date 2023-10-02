@@ -3,31 +3,37 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environment';
 import { Ferias } from '../models/Ferias';
 
-
-
-
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class FeriasService {
+  constructor(private httpClient: HttpClient) {}
 
-    constructor(private httpClient: HttpClient) {
-    }
+  private readonly baseURL = environment['endPoint'];
 
-    private readonly baseURL = environment["endPoint"];
+  AdicionarFerias(ferias: Ferias) {
+    return this.httpClient.post<Ferias>(
+      `${this.baseURL}/AdicionarFerias`,
+      ferias
+    );
+  }
 
-    AdicionarFerias(ferias: Ferias) {
-        return this.httpClient.post<Ferias>(`${this.baseURL}/AdicionarFerias`,
-            ferias)
-    }
+  AtualizarFerias(ferias: Ferias) {
+    return this.httpClient.put<Ferias>(
+      `${this.baseURL}/AtualizarFerias`,
+      ferias
+    );
+  }
 
+  ListarFeriasUsuario(emailUsuario: string) {
+    return this.httpClient.get(
+      `${this.baseURL}/ListarFeriasUsuario?emailUsuario=${emailUsuario}`
+    );
+  }
 
-    ListarFeriasUsuario(emailUsuario: string) {
-        return this.httpClient.get(`${this.baseURL}/ListarFeriasUsuario?emailUsuario=${emailUsuario}`);
-    }
-
-
-
-
+  ObterFerias(idFerias: number) {
+    return this.httpClient.get<Ferias>(
+      `${this.baseURL}/ObterFerias?id=${idFerias}`
+    );
+  }
 }

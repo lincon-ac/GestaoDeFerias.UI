@@ -1,32 +1,46 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environment';
-import { FuncionarioFinanceiro } from '../models/FuncionarioFinanceiro';
-
+import { Funcionario } from '../models/Funcionario';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
+export class FuncionarioService {
+  constructor(private httpClient: HttpClient) {}
 
-export class Funcionarioservice {
+  private readonly baseURL = environment['endPoint'];
 
-    constructor(private httpClient: HttpClient) {
-    }
+  AdicionarFuncionario(Funcionario: Funcionario) {
+    return this.httpClient.post<Funcionario>(
+      `${this.baseURL}/AdicionarFuncionarioFinanceiro`,
+      Funcionario
+    );
+  }
 
-    private readonly baseURL = environment["endPoint"];
+  AtualizarFuncionario(Funcionario: Funcionario) {
+    return this.httpClient.put<Funcionario>(
+      `${this.baseURL}/AtualizarFuncionarioFinanceiro`,
+      Funcionario
+    );
+  }
 
-    AdicionarFuncionarioFinanceiro(funcionarioFinanceiro: FuncionarioFinanceiro) {
-        return this.httpClient.post<FuncionarioFinanceiro>(`${this.baseURL}/AdicionarFuncionarioFinanceiro`,
-            funcionarioFinanceiro)
-    }
+  ListaFuncionariosUsuario(emailUsuario: string) {
+    return this.httpClient.get(
+      `${this.baseURL}/ListaFuncionariosUsuario?emailUsuario=${emailUsuario}`
+    );
+  }
 
-    ListaFuncionariosUsuario(emailUsuario: string) {
-        return this.httpClient.get(`${this.baseURL}/ListaFuncionariosUsuario?emailUsuario=${emailUsuario}`);
-    }
+  CadastrarUsuarioNoFuncionario(idFuncionario: number, emailUsuario: string) {
+    return this.httpClient.post<any>(
+      `${this.baseURL}/CadastrarUsuarioNoFuncionario?idFuncionario=${idFuncionario}&emailUsuario=${emailUsuario}`,
+      null
+    );
+  }
 
-    CadastrarUsuarioNoFuncionario(idFuncionario: number, emailUsuario: string) {
-        return this.httpClient.post<any>(`${this.baseURL}/CadastrarUsuarioNoFuncionario?idFuncionario=${idFuncionario}&emailUsuario=${emailUsuario}`, null)
-    }
-
-
+  ObterFuncionario(idFuncionario: number) {
+    return this.httpClient.get<Funcionario>(
+      `${this.baseURL}/ObterFuncionarioFinanceiro?id=${idFuncionario}`
+    );
+  }
 }
