@@ -36,4 +36,10 @@ export class FeriasService {
       `${this.baseURL}/ObterFerias?id=${idFerias}`
     );
   }
+
+  DeleteFerias(idFerias: number) {
+    return this.httpClient.delete(
+      `${this.baseURL}/DeleteFerias?id=${idFerias}`
+    );
+  }
 }

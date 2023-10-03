@@ -1,0 +1,16 @@
+<navbar></navbar>
+<sidebar></sidebar>
+
+<div class="container-base">
+  <div class="content-page">
+    <div class="header-info-2">
+      <div class="card-header">
+        <div class="card-title">Exclusão de funcionário</div>
+        <div (click)="goToListFuncionarios()" class="card-menu">Voltar para listagem de funcionários</div>
+      </div>
+
+      <div class="card-title">Tem certeza que deseja excluir este funcionário ({{ funcionario?.Nome }}) ?</div>
+      <input type="submit" value="Excluir" (click)="deleteFuncionario()" class="btn-warn" />
+    </div>
+  </div>
+</div>

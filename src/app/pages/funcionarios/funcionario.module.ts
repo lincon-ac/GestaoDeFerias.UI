@@ -4,16 +4,21 @@ import { CommonModule } from '@angular/common';
 import { NavbarModule } from 'src/app/components/navbar/navbar.module';
 import { SidebarModule } from 'src/app/components/sidebar/sidebar.module';
 import { FuncionarioComponent } from './funcionario.component';
+import { ListFuncionariosComponent } from './list-funcionarios/list-funcionarios.component';
+import { DeleteFuncionarioComponent } from './delete-funcionario/delete-funcionario.component';
 import { FuncionarioRoutingModule } from './funcionario-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatIconModule } from '@angular/material/icon';
-import { ListFuncionariosComponent } from './list-funcionarios/list-funcionarios.component';
 
 @NgModule({
   providers: [],
-  declarations: [FuncionarioComponent, ListFuncionariosComponent],
+  declarations: [
+    FuncionarioComponent,
+    ListFuncionariosComponent,
+    DeleteFuncionarioComponent,
+  ],
   imports: [
     CommonModule,
     FuncionarioRoutingModule,

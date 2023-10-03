@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Departamento } from 'src/app/models/Departamento';
 import { SelectModel } from 'src/app/models/SelectModel';
-import { Funcionario } from 'src/app/models/Funcionario';
 import { AuthService } from 'src/app/services/auth.service';
 import { DepartamentoService } from 'src/app/services/departamento.service';
 import { MenuService } from 'src/app/services/menu.service';
 import { FuncionarioService } from 'src/app/services/funcionario.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-departamento',
@@ -16,71 +15,67 @@ import { Router } from '@angular/router';
 })
 export class DepartamentoComponent {
   tipoTela: number = 1; // 1 listagem, 2 cadastro, 3 edição
+  departamentoId: number;
+  departamento: Departamento | null = null;
+
   tableListDepartamento: Array<Departamento>;
   listFuncionarios = new Array<SelectModel>();
-  funcionarioselect = new SelectModel();
 
   departamentoForm: FormGroup;
-
-  id: string;
-  page: number = 1;
-  config: any;
-  paginacao: boolean = true;
-  itemsPorPagina: number = 10;
 
   constructor(
     private router: Router,
     public menuService: MenuService,
     public formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute,
     public funcionarioService: FuncionarioService,
     public authService: AuthService,
     public departamentoService: DepartamentoService
-  ) {}
-
-  ngOnInit() {
-    this.menuService.menuSelecionado = 3;
-
-    this.configpag();
-    this.ListarDepartamentosUsuario();
-
+  ) {
     this.departamentoForm = this.formBuilder.group({
       name: ['', [Validators.required]],
-      funcionarioselect: ['', Validators.required],
     });
-
-    this.ListaFuncionariosUsuario();
   }
 
-  configpag() {
-    this.id = this.gerarIdParaConfigDePaginacao();
+  async ngOnInit() {
+    this.menuService.menuSelecionado = 3;
 
-    this.config = {
-      id: this.id,
-      currentPage: this.page,
-      itemsPerPage: this.itemsPorPagina,
-    };
-  }
+    this.ListarDepartamentosUsuario();
 
-  gerarIdParaConfigDePaginacao() {
-    var result = '';
-    var characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < 10; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    const departamentoIdParam = this.activatedRoute.snapshot.paramMap.get(
+      'id'
+    ) as string;
+    const departamentoId = departamentoIdParam
+      ? parseInt(departamentoIdParam)
+      : null;
+    if (departamentoId) {
+      this.tipoTela = 2;
+      this.departamentoId = departamentoId;
+      await this.getDepartamento();
+    } else {
+      this.tipoTela = 1;
     }
-    return result;
   }
 
-  mudarItemsPorPage() {
-    this.page = 1;
-    this.config.currentPage = this.page;
-    this.config.itemsPerPage = this.itemsPorPagina;
+  async getDepartamento(): Promise<void> {
+    if (this.departamentoId) {
+      this.ObterDepartamento(this.departamentoId);
+    }
   }
 
-  mudarPage(event: any) {
-    this.page = event;
-    this.config.currentPage = this.page;
+  ObterDepartamento(departamentoId: number) {
+    this.departamentoService.ObterDepartamento(departamentoId).subscribe(
+      (response: Departamento) => {
+        this.departamento = response;
+        this.fillForm(response);
+      },
+      (error) => console.error(error),
+      () => {}
+    );
+  }
+
+  fillForm({ Nome }: Departamento): void {
+    this.departamentoForm.get('name')?.setValue(Nome);
   }
 
   ListarDepartamentosUsuario(): void {
@@ -106,36 +101,28 @@ export class DepartamentoComponent {
 
     let item = new Departamento();
     item.Nome = dados['name'].value;
-    item.Id = 0;
-    item.IdFuncionario = parseInt(this.funcionarioselect.id);
+    item.Id = this.departamento?.Id;
 
-    this.departamentoService.AdicionarDepartamento(item).subscribe(
-      (response: Departamento) => {
-        this.departamentoForm.reset();
+    if (this.departamentoId) {
+      this.departamentoService.AtualizarDepartamento(item).subscribe(
+        (response: Departamento) => {
+          this.departamentoForm.reset();
+          this.goToListDepartamentos();
+        },
+        (error) => console.error(error),
+        () => {}
+      );
+    } else {
+      this.departamentoService.AdicionarDepartamento(item).subscribe(
+        (response: Departamento) => {
+          this.departamentoForm.reset();
 
-        this.ListarDepartamentosUsuario();
-      },
-      (error) => console.error(error),
-      () => {}
-    );
-  }
-
-  ListaFuncionariosUsuario() {
-    this.funcionarioService
-      .ListaFuncionariosUsuario(this.authService.getEmailUser())
-      .subscribe((reponse: Array<Funcionario>) => {
-        var listFuncionarios = [];
-
-        reponse.forEach((x) => {
-          var item = new SelectModel();
-          item.id = x.Id.toString();
-          item.name = x.Nome;
-
-          listFuncionarios.push(item);
-        });
-
-        this.listFuncionarios = listFuncionarios;
-      });
+          this.ListarDepartamentosUsuario();
+        },
+        (error) => console.error(error),
+        () => {}
+      );
+    }
   }
 
   goToListDepartamentos() {

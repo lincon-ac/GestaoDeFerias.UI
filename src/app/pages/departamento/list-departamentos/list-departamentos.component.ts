@@ -80,4 +80,12 @@ export class ListDepartamentosComponent {
   goToAddPage() {
     this.router.navigate(['/departamento/add']);
   }
+
+  goToEditPage(DepartamentoId: number) {
+    this.router.navigate(['/departamento/edit', DepartamentoId]);
+  }
+
+  goToDeletePage(DepartamentoId: number) {
+    this.router.navigate(['/departamento/delete', DepartamentoId]);
+  }
 }

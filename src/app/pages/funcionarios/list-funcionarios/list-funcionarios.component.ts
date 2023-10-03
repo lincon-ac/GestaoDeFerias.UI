@@ -78,8 +78,12 @@ export class ListFuncionariosComponent {
       );
   }
 
-  goToEditPage(FuncionarioId) {
+  goToEditPage(FuncionarioId: number) {
     this.router.navigate(['/funcionario/edit', FuncionarioId]);
+  }
+
+  goToDeletePage(FuncionarioId: number) {
+    this.router.navigate(['/funcionario/delete', FuncionarioId]);
   }
 
   goToAddPage() {

@@ -83,6 +83,10 @@ export class ListFeriasComponent {
     this.router.navigate(['/ferias/edit', IdFerias]);
   }
 
+  goToDeletePage(FeriasId: number) {
+    this.router.navigate(['/ferias/delete', FeriasId]);
+  }
+
   goToAddPage() {
     this.router.navigate(['/ferias/add']);
   }

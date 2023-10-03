@@ -5,6 +5,7 @@ import { NavbarModule } from 'src/app/components/navbar/navbar.module';
 import { SidebarModule } from 'src/app/components/sidebar/sidebar.module';
 import { FeriasComponent } from './ferias.component';
 import { ListFeriasComponent } from './list-ferias/list-ferias.component';
+import { DeleteFeriasComponent } from './delete-ferias/delete-ferias.component';
 import { FeriasRoutingModule } from './ferias-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -14,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   providers: [],
-  declarations: [FeriasComponent, ListFeriasComponent],
+  declarations: [FeriasComponent, ListFeriasComponent, DeleteFeriasComponent],
   imports: [
     CommonModule,
     FeriasRoutingModule,

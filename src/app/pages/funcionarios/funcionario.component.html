@@ -30,13 +30,16 @@
             Campo Obrigatório!
           </label>
 
-          <label>Departamento do Funcionário</label>
-          <input type="text" name="departamento" id="departamento" placeholder="Departamento"
-            formControlName="departamento" required />
-          <label class="error-input" *ngIf="funcionarioForm.get('departamento')?.errors?.['required'] &&
-                                                  funcionarioForm.get('departamento')?.touched">
-            Campo Obrigatório!
-          </label>
+          <div class="group-row">
+            <label>Departamento do Funcionário</label>
+            <ng-select class="select-padrao" formControlName="departamentoSelect" [(ngModel)]="departamentoSelect"
+              [items]="listDepartamentos" bindLabel="name" [multiple]="false" [clearable]="false"
+              [searchable]="false"></ng-select>
+              <label class="error-input" *ngIf="funcionarioForm.get('departamento')?.errors?.['required'] &&
+                                                                funcionarioForm.get('departamento')?.touched">
+                Campo Obrigatório!
+              </label>
+          </div>
         </div>
       </div>
 

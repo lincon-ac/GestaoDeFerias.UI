@@ -1,0 +1,16 @@
+<navbar></navbar>
+<sidebar></sidebar>
+
+<div class="container-base">
+  <div class="content-page">
+    <div class="header-info-2">
+      <div class="card-header">
+        <div class="card-title">Exclusão de férias</div>
+        <div (click)="goToListFerias()" class="card-menu">Voltar para listagem de férias</div>
+      </div>
+
+      <div class="card-title">Tem certeza que deseja excluir as férias do funcionário ({{ funcionario?.Nome }})?</div>
+      <input type="submit" value="Excluir" (click)="deleteFerias()" class="btn-warn" />
+    </div>
+  </div>
+</div>
