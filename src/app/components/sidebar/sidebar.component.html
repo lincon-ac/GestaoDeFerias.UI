@@ -10,19 +10,19 @@
     </div>
 
     <div class="grupo-menu">
-        <div class="container-icone-menu">
-            <div class="caixa-menu caixa-menu-texto" (click)="selectMenu(2)"
-                [ngClass]="{'caixa-menu-select': this.menuService.menuSelecionado == 2, '':this.menuService.menuSelecionado!= 2}">
-                Funcionário
-            </div>
+      <div class="container-icone-menu">
+        <div class="caixa-menu caixa-menu-texto" (click)="selectMenu(3)"
+          [ngClass]="{'caixa-menu-select': this.menuService.menuSelecionado == 3, '':this.menuService.menuSelecionado!= 3}">
+          Departamento
         </div>
+      </div>
     </div>
 
     <div class="grupo-menu">
         <div class="container-icone-menu">
-            <div class="caixa-menu caixa-menu-texto" (click)="selectMenu(3)"
-                [ngClass]="{'caixa-menu-select': this.menuService.menuSelecionado == 3, '':this.menuService.menuSelecionado!= 3}">
-                Departamento
+            <div class="caixa-menu caixa-menu-texto" (click)="selectMenu(2)"
+                [ngClass]="{'caixa-menu-select': this.menuService.menuSelecionado == 2, '':this.menuService.menuSelecionado!= 2}">
+                Funcionário
             </div>
         </div>
     </div>
