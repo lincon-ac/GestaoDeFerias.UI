@@ -14,6 +14,8 @@
           <tr>
             <td>Código</td>
             <td>Nome</td>
+            <td>Data de início</td>
+            <td>Data de encerramento</td>
             <td>Ação</td>
           </tr>
         </thead>
@@ -22,7 +24,12 @@
             class="linha-table" [ngClass]="{'linha-cinza' : i % 2 == 0, 'linha-branca' : i % 2 !== 0}">
             <td>{{item.Id}}</td>
             <td>{{item.funcionario.Nome}}</td>
-            <td><input type="submit" value="Editar" (click)="goToEditPage(item.Id)" class="btn-primary" /></td>
+            <td>{{item.DataInicio | date}}</td>
+            <td>{{item.DataEncerramento | date}}</td>
+            <td class="action-buttons">
+              <input type="submit" value="Editar" (click)="goToEditPage(item.Id)" class="btn-primary" />
+              <input type="submit" value="Excluir" (click)="goToDeletePage(item.Id)" class="btn-warn" />
+            </td>
           </tr>
         </tbody>
       </table>

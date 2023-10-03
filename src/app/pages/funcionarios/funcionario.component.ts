@@ -5,6 +5,9 @@ import { AuthService } from 'src/app/services/auth.service';
 import { MenuService } from 'src/app/services/menu.service';
 import { FuncionarioService } from 'src/app/services/funcionario.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SelectModel } from 'src/app/models/SelectModel';
+import { DepartamentoService } from 'src/app/services/departamento.service';
+import { Departamento } from 'src/app/models/Departamento';
 
 @Component({
   selector: 'app-funcionario',
@@ -13,8 +16,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class FuncionarioComponent {
   tipoTela: number = 1; // 1 cadastro, 2 edição
-  idFuncionario: number | null = null;
+  funcionarioId: number | null = null;
   funcionario: Funcionario | null = null;
+
+  departamentoSelect = new SelectModel();
+  listDepartamentos = new Array<SelectModel>();
 
   funcionarioForm: FormGroup;
 
@@ -24,27 +30,30 @@ export class FuncionarioComponent {
     public formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     public funcionarioService: FuncionarioService,
+    public departamentoService: DepartamentoService,
     public authService: AuthService
   ) {
     this.funcionarioForm = this.formBuilder.group({
       name: ['', [Validators.required]],
       matricula: ['', [Validators.required]],
-      departamento: ['', [Validators.required]],
+      departamentoSelect: ['', [Validators.required]],
     });
   }
 
   async ngOnInit(): Promise<void> {
     this.menuService.menuSelecionado = 2;
 
+    this.ListarDepartamentosUsuario();
+
     const funcionarioIdParam = this.activatedRoute.snapshot.paramMap.get(
       'id'
     ) as string;
-    const idFuncionario = funcionarioIdParam
+    const funcionarioId = funcionarioIdParam
       ? parseInt(funcionarioIdParam)
       : null;
-    if (idFuncionario) {
+    if (funcionarioId) {
       this.tipoTela = 2;
-      this.idFuncionario = idFuncionario;
+      this.funcionarioId = funcionarioId;
       await this.getFuncionario();
     } else {
       this.tipoTela = 1;
@@ -52,13 +61,13 @@ export class FuncionarioComponent {
   }
 
   async getFuncionario(): Promise<void> {
-    if (this.idFuncionario) {
-      this.ObterFuncionario(this.idFuncionario);
+    if (this.funcionarioId) {
+      this.ObterFuncionario(this.funcionarioId);
     }
   }
 
-  ObterFuncionario(idFuncionario: number) {
-    this.funcionarioService.ObterFuncionario(idFuncionario).subscribe(
+  ObterFuncionario(funcionarioId: number) {
+    this.funcionarioService.ObterFuncionario(funcionarioId).subscribe(
       (response: Funcionario) => {
         this.funcionario = response;
         this.fillForm(response);
@@ -68,10 +77,32 @@ export class FuncionarioComponent {
     );
   }
 
-  fillForm({ Nome, Matricula, Departamento }: Funcionario): void {
+  fillForm({ Nome, Matricula, DepartamentoId }: Funcionario): void {
     this.funcionarioForm.get('name')?.setValue(Nome);
     this.funcionarioForm.get('matricula')?.setValue(Matricula);
-    this.funcionarioForm.get('departamento')?.setValue(Departamento);
+    const departamentoModel = new SelectModel();
+    departamentoModel.id = DepartamentoId.toString();
+    departamentoModel.name = this.listDepartamentos.find(
+      (funcionario) => funcionario.id == DepartamentoId.toString()
+    ).name;
+    this.departamentoSelect = departamentoModel;
+  }
+
+  ListarDepartamentosUsuario() {
+    this.departamentoService
+      .ListarDepartamentosUsuario(this.authService.getEmailUser())
+      .subscribe((reponse: Array<Departamento>) => {
+        var listaCatagorias = [];
+
+        reponse.forEach((x) => {
+          var item = new SelectModel();
+          item.id = x.Id.toString();
+          item.name = x.Nome;
+          listaCatagorias.push(item);
+        });
+
+        this.listDepartamentos = listaCatagorias;
+      });
   }
 
   dadosForm() {
@@ -84,17 +115,15 @@ export class FuncionarioComponent {
     let item = new Funcionario();
     item.Nome = dados['name'].value;
     item.Matricula = dados['matricula'].value;
-    item.Departamento = dados['departamento'].value;
+    item.DepartamentoId = parseInt(this.departamentoSelect.id);
 
     item.Id = this.funcionario?.Id;
     item.Mes = 0;
     item.Ano = 0;
     item.DiaFechamento = 0;
     item.GerarCopiaFerias = true;
-    item.MesCopia = 0;
-    item.AnoCopia = 0;
 
-    if (this.idFuncionario) {
+    if (this.funcionarioId) {
       this.funcionarioService.AtualizarFuncionario(item).subscribe(
         (response: Funcionario) => {
           this.funcionarioForm.reset();
@@ -106,11 +135,12 @@ export class FuncionarioComponent {
     } else {
       this.funcionarioService.AdicionarFuncionario(item).subscribe(
         (response: Funcionario) => {
+          this.funcionarioId = response.Id;
           this.funcionarioForm.reset();
 
           this.funcionarioService
             .CadastrarUsuarioNoFuncionario(
-              response.Id,
+              this.funcionarioId,
               this.authService.getEmailUser()
             )
             .subscribe(

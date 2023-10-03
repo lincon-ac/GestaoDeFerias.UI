@@ -14,7 +14,7 @@
           <label>Nome do departamento</label>
           <input type="text" name="name" id="name" placeholder="Nome" formControlName="name" required />
           <label class="error-input" *ngIf="departamentoForm.get('name')?.errors?.['required'] &&
-                    departamentoForm.get('name')?.touched">
+                    departamentoForm.get('name')?.pristine">
             Campo Obrigatório!
           </label>
         </div>
@@ -22,21 +22,9 @@
 
       <div class="row">
         <div class="group-row">
-          <label>Selecione o funcionário</label>
-          <ng-select class="select-padrao" [(ngModel)]="funcionarioselect" [items]="listFuncionarios" bindLabel="name"
-            [multiple]="false" [clearable]="false" [searchable]="false" formControlName="funcionarioselect"></ng-select>
+          <input type="submit" [disabled]="departamentoForm.invalid" value="Salvar" class="btn-primary" />
         </div>
       </div>
-
-
-      <div class="row">
-        <div class="group-row">
-          <input type="submit" value="Salvar" class="btn-primary" />
-        </div>
-      </div>
-
     </form>
-
   </div>
-
 </div>

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FuncionarioComponent } from './funcionario.component';
 import { ListFuncionariosComponent } from './list-funcionarios/list-funcionarios.component';
+import { DeleteFuncionarioComponent } from './delete-funcionario/delete-funcionario.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'add',
     component: FuncionarioComponent,
+  },
+  {
+    path: 'delete/:id',
+    component: DeleteFuncionarioComponent,
   },
 ];
 

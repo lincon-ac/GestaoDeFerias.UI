@@ -24,7 +24,10 @@
             <td>{{item.Id}}</td>
             <td>{{item.Nome}}</td>
             <td>{{item.Matricula}}</td>
-            <td><input type="submit" value="Editar" (click)="goToEditPage(item.Id)" class="btn-primary" /></td>
+            <td class="action-buttons">
+              <input type="submit" value="Editar" (click)="goToEditPage(item.Id)" class="btn-primary" />
+              <input type="submit" value="Excluir" (click)="goToDeletePage(item.Id)" class="btn-warn" />
+            </td>
           </tr>
         </tbody>
       </table>

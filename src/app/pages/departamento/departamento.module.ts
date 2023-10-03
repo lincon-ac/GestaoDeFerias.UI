@@ -5,6 +5,7 @@ import { NavbarModule } from 'src/app/components/navbar/navbar.module';
 import { SidebarModule } from 'src/app/components/sidebar/sidebar.module';
 import { DepartamentoComponent } from './departamento.component';
 import { ListDepartamentosComponent } from './list-departamentos/list-departamentos.component';
+import { DeleteDepartamentoComponent } from './delete-departamento/delete-departamento.component';
 import { DepartamentoRoutingModule } from './departamento-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -13,7 +14,11 @@ import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   providers: [],
-  declarations: [DepartamentoComponent, ListDepartamentosComponent],
+  declarations: [
+    DepartamentoComponent,
+    ListDepartamentosComponent,
+    DeleteDepartamentoComponent,
+  ],
   imports: [
     CommonModule,
     DepartamentoRoutingModule,

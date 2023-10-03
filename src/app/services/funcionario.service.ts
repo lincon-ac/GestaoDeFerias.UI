@@ -43,4 +43,10 @@ export class FuncionarioService {
       `${this.baseURL}/ObterFuncionarioFinanceiro?id=${idFuncionario}`
     );
   }
+
+  DeleteFuncionario(idFuncionario: number) {
+    return this.httpClient.delete<Funcionario>(
+      `${this.baseURL}/DeleteFuncionarioFinanceiro?id=${idFuncionario}`
+    );
+  }
 }
